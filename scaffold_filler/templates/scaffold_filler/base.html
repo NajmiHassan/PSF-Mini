@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mini-PSF · Protein Scaffold Filling{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'scaffold_filler/style.css' %}">
+</head>
+<body>
+    <div class="paper-grid"></div>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="{% url 'scaffold_filler:home' %}" class="logo">
+                <span class="logo-mark">ψ</span>
+                <span class="logo-text">
+                    <span class="logo-title">Mini&#8209;PSF</span>
+                    <span class="logo-sub">Protein Scaffold Filling</span>
+                </span>
+            </a>
+            <nav class="nav">
+                <a href="{% url 'scaffold_filler:home' %}">Predict</a>
+                <a href="{% url 'scaffold_filler:history' %}">History</a>
+                <a href="{% url 'scaffold_filler:about' %}">About</a>
+            </nav>
+        </div>
+    </header>
+
+    {% if messages %}
+        <div class="container">
+            {% for message in messages %}
+                <div class="msg msg-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>
+                Mini-PSF · An educational demonstration inspired by
+                <a href="https://psf.ncat.edu/" target="_blank" rel="noopener">PSF (NCAT)</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

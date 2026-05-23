@@ -1,0 +1,45 @@
+{% extends 'scaffold_filler/base.html' %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <header class="page-header">
+            <h1>Prediction history</h1>
+            <p class="page-sub">The 20 most recent scaffold fillings, saved to the database.</p>
+        </header>
+
+        {% if records %}
+        <div class="table-wrap">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Input</th>
+                        <th>Output</th>
+                        <th>Gaps</th>
+                        <th>Conf.</th>
+                        <th>When</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in records %}
+                    <tr>
+                        <td class="num">{{ r.id }}</td>
+                        <td><code class="cell-seq">{{ r.input_scaffold|truncatechars:40 }}</code></td>
+                        <td><code class="cell-seq">{{ r.output_filled|truncatechars:40 }}</code></td>
+                        <td class="num">{{ r.gap_count }}</td>
+                        <td class="num">{{ r.avg_confidence }}%</td>
+                        <td>{{ r.created_at|date:"M j, Y · H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>No predictions yet. <a href="{% url 'scaffold_filler:home' %}">Run your first one →</a></p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

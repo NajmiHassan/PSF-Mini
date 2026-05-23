@@ -1,0 +1,94 @@
+{% extends 'scaffold_filler/base.html' %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="hero-text">
+                <span class="eyebrow">Computational Proteomics · Demo</span>
+                <h1 class="hero-title">
+                    Fill the <em>gaps</em> in incomplete
+                    <span class="hero-accent">protein scaffolds.</span>
+                </h1>
+                <p class="hero-lead">
+                    Paste a protein sequence with missing positions marked
+                    <code>&#8209;</code>, <code>?</code>, or <code>X</code>.
+                    The model predicts the most likely amino acid for each gap
+                    using a context-based statistical approach.
+                </p>
+            </div>
+
+            <aside class="stats-card">
+                <h3>Model snapshot</h3>
+                <dl class="stats">
+                    <div>
+                        <dt>Reference proteins</dt>
+                        <dd>{{ stats.reference_protein_count }}</dd>
+                    </div>
+                    <div>
+                        <dt>Amino acids seen</dt>
+                        <dd>{{ stats.total_amino_acids_seen }}</dd>
+                    </div>
+                    <div>
+                        <dt>Unique contexts</dt>
+                        <dd>{{ stats.unique_contexts_learned }}</dd>
+                    </div>
+                    <div>
+                        <dt>Context window</dt>
+                        <dd>±{{ stats.context_size }} AA</dd>
+                    </div>
+                </dl>
+            </aside>
+        </div>
+    </div>
+</section>
+
+<section class="form-section">
+    <div class="container">
+        <form action="{% url 'scaffold_filler:predict' %}" method="post" class="predict-form">
+            {% csrf_token %}
+            <label for="scaffold" class="form-label">
+                <span class="form-label-text">Scaffold sequence</span>
+                <span class="form-label-hint">single-letter amino-acid codes · use <code>&#8209;</code> for gaps</span>
+            </label>
+            <textarea
+                id="scaffold"
+                name="scaffold"
+                rows="6"
+                placeholder="e.g. MKTAY-AKQRQ-SFVKS--SRQLEER"
+                required></textarea>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    Fill scaffold
+                    <span class="btn-arrow">→</span>
+                </button>
+                <button type="reset" class="btn-secondary">Clear</button>
+            </div>
+        </form>
+
+        <div class="examples">
+            <h3 class="examples-title">Try an example</h3>
+            <div class="example-list">
+                {% for label, seq in example_scaffolds %}
+                    <button type="button" class="example-card" data-seq="{{ seq }}">
+                        <span class="example-label">{{ label }}</span>
+                        <code class="example-seq">{{ seq|truncatechars:60 }}</code>
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Clicking an example fills the textarea.
+    document.querySelectorAll('.example-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const ta = document.getElementById('scaffold');
+            ta.value = card.dataset.seq;
+            ta.focus();
+            ta.scrollIntoView({behavior: 'smooth', block: 'center'});
+        });
+    });
+</script>
+{% endblock %}

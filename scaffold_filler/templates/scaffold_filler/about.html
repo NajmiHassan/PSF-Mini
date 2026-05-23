@@ -1,0 +1,80 @@
+{% extends 'scaffold_filler/base.html' %}
+
+{% block content %}
+<section class="page-section about">
+    <div class="container narrow">
+        <header class="page-header">
+            <span class="eyebrow">Documentation</span>
+            <h1>About this project</h1>
+        </header>
+
+        <div class="prose">
+            <h2>The problem</h2>
+            <p>
+                Protein sequencing techniques like mass spectrometry sometimes produce
+                <strong>incomplete protein sequences</strong> with missing positions, called
+                <em>scaffolds</em>. Filling these gaps accurately is important for protein
+                function prediction and drug design.
+            </p>
+
+            <h2>The original paper</h2>
+            <p>
+                This project is inspired by
+                <em>"PSF: A Web Application Tool for Protein Scaffold Filling"</em>, which
+                presents a Django-based web platform combining machine learning and deep
+                learning models for scaffold filling. The original is hosted at
+                <a href="https://psf.ncat.edu/" target="_blank" rel="noopener">psf.ncat.edu</a>.
+            </p>
+
+            <h2>What this mini version does</h2>
+            <p>
+                Mini-PSF reproduces the <strong>core idea</strong> with a much simpler,
+                explainable model: a <strong>k-mer frequency table</strong>. We scan
+                through a reference set of real proteins and record, for every position,
+                which amino acid sits between a given pair of left and right neighbors.
+                To fill a gap, we look at the surrounding amino acids and predict the
+                middle position from the frequency table.
+            </p>
+
+            <div class="algo-box">
+                <pre>for each position i in the protein:
+    left  = sequence[i-2 : i]
+    right = sequence[i+1 : i+3]
+    table[(left, right)][sequence[i]] += 1</pre>
+            </div>
+
+            <p>
+                This is the same family of techniques (n-gram / k-mer language modelling)
+                that underlies more sophisticated deep learning models — just stripped to
+                its essence so the algorithm is fully visible.
+            </p>
+
+            <h2>Current model</h2>
+            <ul class="bullets">
+                <li><strong>{{ stats.reference_protein_count }}</strong> reference proteins from well-known structures (insulin, hemoglobin, ubiquitin, GFP, …)</li>
+                <li><strong>{{ stats.unique_contexts_learned }}</strong> unique context patterns learned</li>
+                <li><strong>{{ stats.total_observations }}</strong> total amino-acid observations</li>
+                <li>Context window: <strong>±{{ stats.context_size }}</strong> amino acids</li>
+            </ul>
+
+            <h2>Tech stack</h2>
+            <ul class="bullets">
+                <li><strong>Backend:</strong> Django 4 (Python)</li>
+                <li><strong>Algorithm:</strong> Pure-Python k-mer frequency model</li>
+                <li><strong>Database:</strong> SQLite (stores prediction history)</li>
+                <li><strong>Frontend:</strong> Vanilla HTML + CSS</li>
+            </ul>
+
+            <h2>Limitations</h2>
+            <p>
+                Honest disclosure: the reference dataset is intentionally small, so
+                confidence will drop on contexts the model hasn&rsquo;t seen. The
+                algorithm falls back to global amino-acid frequencies in that case
+                &mdash; the per-gap table marks this as <em>fallback</em>.
+                Production tools like the original PSF use deep neural networks trained
+                on hundreds of thousands of proteins.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'scaffold_filler/base.html' %}
+
+{% block content %}
+<section class="result-section">
+    <div class="container">
+        <a href="{% url 'scaffold_filler:home' %}" class="back-link">← New prediction</a>
+
+        <header class="result-header">
+            <h1>Prediction result</h1>
+            <div class="result-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Gaps filled</span>
+                    <span class="meta-value">{{ result.gap_count }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Avg confidence</span>
+                    <span class="meta-value">{{ result.avg_confidence }}<span class="meta-unit">%</span></span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Length</span>
+                    <span class="meta-value">{{ result.filled|length }}<span class="meta-unit">aa</span></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="sequence-block">
+            <h3 class="sequence-title">Input scaffold</h3>
+            <pre class="sequence sequence-input">{{ result.original }}</pre>
+        </div>
+
+        <div class="sequence-block">
+            <h3 class="sequence-title">
+                Filled sequence
+                <span class="legend">
+                    <span class="legend-dot legend-known"></span> original
+                    <span class="legend-dot legend-filled"></span> predicted
+                </span>
+            </h3>
+            <pre class="sequence sequence-output" id="filledSeq">{{ result.filled }}</pre>
+            <button type="button" class="btn-copy" data-target="filledSeq">Copy sequence</button>
+        </div>
+
+        {% if result.predictions %}
+        <div class="predictions-block">
+            <h3 class="sequence-title">Per-gap predictions</h3>
+            <div class="table-wrap">
+                <table class="predictions-table">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Left ctx</th>
+                            <th>Predicted</th>
+                            <th>Right ctx</th>
+                            <th>Confidence</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in result.predictions %}
+                        <tr>
+                            <td class="num">{{ p.position }}</td>
+                            <td><code>{{ p.left_context|default:"—" }}</code></td>
+                            <td><span class="predicted-aa">{{ p.predicted }}</span></td>
+                            <td><code>{{ p.right_context|default:"—" }}</code></td>
+                            <td>
+                                <div class="conf-bar">
+                                    <div class="conf-fill" style="width: {{ p.confidence }}%"></div>
+                                    <span class="conf-text">{{ p.confidence }}%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="src-badge src-{{ p.source }}">{{ p.source }}</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+    document.querySelectorAll('.btn-copy').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const text = document.getElementById(btn.dataset.target).textContent.trim();
+            try {
+                await navigator.clipboard.writeText(text);
+                const original = btn.textContent;
+                btn.textContent = '✓ Copied';
+                setTimeout(() => btn.textContent = original, 1500);
+            } catch (e) {
+                btn.textContent = 'Copy failed';
+            }
+        });
+    });
+</script>
+{% endblock %}
