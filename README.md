@@ -4,7 +4,7 @@ A simplified web application inspired by the research paper **"PSF: A Web Applic
 
 ## What is this?
 
-When scientists sequence proteins, they often end up with **incomplete sequences** that have gaps — called **scaffolds**. The goal of "scaffold filling" is to predict the missing amino acids in those gaps.
+When scientists sequence proteins, they often end up with **incomplete sequences** that have gaps called **scaffolds**. The goal of "scaffold filling" is to predict the missing amino acids in those gaps.
 
 This mini-project is a Django web app that takes a protein scaffold with gaps (shown as `-` or `?` or `X`) and predicts the most likely amino acids to fill those gaps based on a statistical model trained on real protein data.
 
@@ -17,16 +17,16 @@ This mini-project is a Django web app that takes a protein scaffold with gaps (s
 | Multiple pre-trained models | One simple model |
 | Production deployment | Local Django demo |
 
-The **concept** is the same — fill gaps in protein sequences — but this uses a simpler, explainable algorithm so you can show the professor you understand the underlying problem.
+The **concept** is the same, fill gaps in protein sequences, but this uses a simpler, explainable algorithm so you can show the professor you understand the underlying problem.
 
 ## How it works (the algorithm)
 
 1. We have a small reference dataset of real protein sequences.
-2. We build a **k-mer frequency table** — for every 3-letter window in real proteins, we record how often each amino acid appears next to its neighbors.
+2. We build a **k-mer frequency table**, for every 3-letter window in real proteins, we record how often each amino acid appears next to its neighbors.
 3. When the user gives a scaffold with gaps, we look at the amino acids around each gap and pick the most likely amino acid to fill it (based on the frequency table).
 4. We also return a **confidence score** for each prediction.
 
-This is called a **context-based statistical prediction** — it's the same family of ideas used in the paper, just simplified.
+This is called a **context-based statistical prediction**, it's the same family of ideas used in the paper, just simplified.
 
 ## Tech Stack
 
