@@ -15,7 +15,7 @@ This mini-project is a Django web app that takes a protein scaffold with gaps (s
 | Deep learning (LSTM/Transformer) | k-mer frequency model (statistical) |
 | Large training dataset | Small built-in dataset |
 | Multiple pre-trained models | One simple model |
-| Production deployment | Local Django demo |
+| Django deployment | Django Deployment |
 
 The **concept** is the same, fill gaps in protein sequences, but this uses a simpler, explainable algorithm so you can show the professor you understand the underlying problem.
 
